@@ -26,8 +26,16 @@ void setup() {
 }
 
 uint16_t i;
+int16_t sineOutput;
 void loop() {
-  delay(20);
-  analogWrite(led, sinSample(i));
   i++;
+  delay(30);
+  sineOutput = sinSample(i) * 2;
+  sineOutput = sineOutput - 127.5;
+  if (sineOutput < 0) {
+    sineOutput = 0;
+  }
+  sineOutput = sineOutput * 2;
+  analogWrite(led, sineOutput);
+  
 }
