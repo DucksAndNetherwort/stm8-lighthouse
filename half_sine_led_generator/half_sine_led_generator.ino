@@ -1,4 +1,7 @@
-int led = 5;
+int led = 5; //pin = c3
+int inBright = 10; // pin = d1
+float brightnessMultiplier = 2;
+int inSpeed = 11; // pin = d2
 
 #define SIN_LEN 512
 static const uint8_t sin_table[] =
@@ -22,6 +25,8 @@ inline static uint8_t sinSample(uint16_t i) {
 
 void setup() {
     pinMode(led, OUTPUT);
+    pinMode(inBright, INPUT);
+    pinMode(inSpeed, INPUT);
 
 }
 
@@ -29,13 +34,27 @@ uint16_t i;
 int16_t sineOutput;
 void loop() {
   i++;
-  delay(30);
+  delay(10);
   sineOutput = sinSample(i) * 2;
   sineOutput = sineOutput - 127.5;
   if (sineOutput < 0) {
     sineOutput = 0;
   }
-  sineOutput = sineOutput * 2;
+  sineOutput = sineOutput * brightnessMultiplier;
   analogWrite(led, sineOutput);
-  
+  if (digitalRead(inBright) == true) {
+    if (brightnessMultiplier == 2) {
+      brightnessMultiplier = 0.5;
+    }
+    else if (brightnessMultiplier == 0.5) {
+      brightnessMultiplier = 1;
+    }
+    else if (brightnessMultiplier == 1) {
+      brightnessMultiplier = 1.5;
+    }
+    else if (brightnessMultiplier == 1.5) {
+      brightnessMultiplier == 2;
+    }
+    delay(200);
+  }
 }
