@@ -42,7 +42,8 @@ void loop() {
   }
   sineOutput = sineOutput * brightnessMultiplier;
   analogWrite(led, sineOutput);
-  if (digitalRead(inBright) == true) {
+  if ((GPIOD->IDR & 0b00000001)) {
+    analogWrite(led, 256);
     if (brightnessMultiplier == 2) {
       brightnessMultiplier = 0.5;
     }
