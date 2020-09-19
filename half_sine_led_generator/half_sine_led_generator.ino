@@ -1,7 +1,8 @@
-int led = 5; //pin = c3
-int inBright = 10; // pin = d1
+int led = PC3;
+int inBright = PD1;
 float brightnessMultiplier = 2;
-int inSpeed = 11; // pin = d2
+int inSpeed = PD2;
+int speedModifier = 10;
 
 #define SIN_LEN 512
 static const uint8_t sin_table[] =
@@ -25,8 +26,8 @@ inline static uint8_t sinSample(uint16_t i) {
 
 void setup() {
     pinMode(led, OUTPUT);
-    pinMode(inBright, INPUT);
-    pinMode(inSpeed, INPUT);
+    pinMode(inBright, INPUT_PULLUP);
+    pinMode(inSpeed, INPUT_PULLUP);
 
 }
 
@@ -34,7 +35,7 @@ uint16_t i;
 int16_t sineOutput;
 void loop() {
   i++;
-  delay(10);
+  delay(speedModifier);
   sineOutput = sinSample(i) * 2;
   sineOutput = sineOutput - 127.5;
   if (sineOutput < 0) {
@@ -42,8 +43,8 @@ void loop() {
   }
   sineOutput = sineOutput * brightnessMultiplier;
   analogWrite(led, sineOutput);
-  if ((GPIOD->IDR & 0b00000001)) {
-    analogWrite(led, 256);
+  
+  if (!digitalRead(inBright)) {
     if (brightnessMultiplier == 2) {
       brightnessMultiplier = 0.5;
     }
@@ -54,8 +55,36 @@ void loop() {
       brightnessMultiplier = 1.5;
     }
     else if (brightnessMultiplier == 1.5) {
-      brightnessMultiplier == 2;
+      brightnessMultiplier = 2;
     }
-    delay(200);
+    
+    while(!digitalRead(inBright)) {
+      analogWrite(led, 127.5 * brightnessMultiplier);
+    }
+    digitalWrite(led, LOW);
+  }
+
+  if(!digitalRead(inSpeed)) {
+    if (speedModifier == 5) {
+      speedModifier = 10;
+    }
+    else if (speedModifier == 10) {
+      speedModifier = 15;
+    }
+    else if (speedModifier == 15) {
+      speedModifier = 20;
+    }
+    else if (speedModifier == 20) {
+      speedModifier = 25;
+    }
+    else if (speedModifier == 25) {
+      speedModifier = 30;
+    }
+    else if (speedModifier == 30) {
+      speedModifier = 5;
+    }
+    while(!digitalRead(inSpeed)) {
+      analogWrite(led, speedModifier * 8.5);
+    }
   }
 }
