@@ -84,7 +84,7 @@ void loop() {
       speedModifier = 5;
     }
     while(!digitalRead(inSpeed)) {
-      analogWrite(led, speedModifier * 8.5);
+      analogWrite(led, 260 - (speedModifier * 8.5));
     }
   }
 }
