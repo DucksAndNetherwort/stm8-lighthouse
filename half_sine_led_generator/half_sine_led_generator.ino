@@ -31,20 +31,10 @@ void setup() {
 
 }
 
-uint16_t i;
-int16_t sineOutput;
-void loop() {
-  i++;
-  delay(speedModifier);
-  sineOutput = sinSample(i) * 2;
-  sineOutput = sineOutput - 127.5;
-  if (sineOutput < 0) {
-    sineOutput = 0;
-  }
-  sineOutput = sineOutput * brightnessMultiplier;
-  analogWrite(led, sineOutput);
-  
+void checkBright() {
+  uint32_t i = 0;
   if (!digitalRead(inBright)) {
+    updateBright:
     if (brightnessMultiplier == 2) {
       brightnessMultiplier = 0.5;
     }
@@ -57,14 +47,24 @@ void loop() {
     else if (brightnessMultiplier == 1.5) {
       brightnessMultiplier = 2;
     }
-    
+
     while(!digitalRead(inBright)) {
-      analogWrite(led, 127.5 * brightnessMultiplier);
+      analogWrite(led, 128 * brightnessMultiplier);
+      i++;
+      if (i == 700) {
+        i = 0;
+        goto updateBright;
+      }
+      delay(1);
     }
     digitalWrite(led, LOW);
   }
+}
 
-  if(!digitalRead(inSpeed)) {
+void checkSpeed() {
+  uint32_t i = 0;
+   if(!digitalRead(inSpeed)) {
+    updateSpeed:
     if (speedModifier == 5) {
       speedModifier = 10;
     }
@@ -85,6 +85,29 @@ void loop() {
     }
     while(!digitalRead(inSpeed)) {
       analogWrite(led, 260 - (speedModifier * 8.5));
+      i++;
+      if (i == 700) {
+        i = 0;
+        goto updateSpeed;
+      }
+      delay(1);
     }
   }
+}
+
+uint16_t i;
+int16_t sineOutput;
+void loop() {
+  i++;
+  delay(speedModifier);
+  sineOutput = sinSample(i) * 2;
+  sineOutput = sineOutput - 127.5;
+  if (sineOutput < 0) {
+    sineOutput = 0;
+  }
+  sineOutput = sineOutput * brightnessMultiplier;
+  analogWrite(led, sineOutput);
+
+  checkBright();
+  checkSpeed();
 }
