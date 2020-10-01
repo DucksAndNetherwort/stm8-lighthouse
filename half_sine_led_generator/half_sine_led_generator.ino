@@ -17,6 +17,16 @@ static const uint8_t sin_table[] =
     253, 253, 253, 253, 254, 254, 254, 254, 254, 255, 255, 255, 255, 255, 255, 255,
 };
 
+
+/**
+ * @brief the sine sample function
+ * 
+ * this mirrors and inverts values from a sine lookup table.
+ * 
+ * @param i angle to return the sine of
+ * 
+ * @return sine value
+ */
 inline static uint8_t sinSample(uint16_t i) {
     uint16_t newI = i % (SIN_LEN/2);
     newI = (newI >= (SIN_LEN/4)) ? (SIN_LEN/2 - newI -1) : newI;
@@ -24,6 +34,12 @@ inline static uint8_t sinSample(uint16_t i) {
     return (i >= (SIN_LEN/2)) ? (255 - sine) : sine;
 }
 
+
+/**
+ * @brief setup
+ * 
+ * configuring i/o for led and input buttons
+ */
 void setup() {
     pinMode(led, OUTPUT);
     pinMode(inBright, INPUT_PULLUP);
@@ -32,9 +48,8 @@ void setup() {
 }
 
 void checkBright() {
-  uint32_t i = 0;
-  if (!digitalRead(inBright)) {
-    updateBright:
+  while (!digitalRead(inBright)) {
+    delay(5);
     if (brightnessMultiplier == 2) {
       brightnessMultiplier = 0.5;
     }
@@ -47,13 +62,18 @@ void checkBright() {
     else if (brightnessMultiplier == 1.5) {
       brightnessMultiplier = 2;
     }
-
-    while(!digitalRead(inBright)) {
+    bool stay = true;
+    while(stay) {
+      if (digitalRead(inBright)) {
+        stay = false;
+      }
+      
+      uint32_t i = 0;
       analogWrite(led, 128 * brightnessMultiplier);
       i++;
       if (i == 700) {
         i = 0;
-        goto updateBright;
+        stay = false;
       }
       delay(1);
     }
@@ -62,9 +82,7 @@ void checkBright() {
 }
 
 void checkSpeed() {
-  uint32_t i = 0;
    if(!digitalRead(inSpeed)) {
-    updateSpeed:
     if (speedModifier == 5) {
       speedModifier = 10;
     }
@@ -83,12 +101,18 @@ void checkSpeed() {
     else if (speedModifier == 30) {
       speedModifier = 5;
     }
-    while(!digitalRead(inSpeed)) {
+
+    bool stay = true;
+    while(stay) {
+      uint32_t i = 0;
       analogWrite(led, 260 - (speedModifier * 8.5));
       i++;
+      if (digitalRead(inBright)) {
+        stay = false;
+      }
       if (i == 700) {
         i = 0;
-        goto updateSpeed;
+        stay = false;
       }
       delay(1);
     }
