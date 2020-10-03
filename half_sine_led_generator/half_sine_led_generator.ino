@@ -48,7 +48,7 @@ void setup() {
 }
 
 void checkBright() {
-  while (!digitalRead(inBright)) {
+  if (!digitalRead(inBright)) {
     delay(5);
     if (brightnessMultiplier == 2) {
       brightnessMultiplier = 0.5;
@@ -63,15 +63,15 @@ void checkBright() {
       brightnessMultiplier = 2;
     }
     bool stay = true;
-    while(stay) {
+    uint32_t i = 0;
+    while(stay == true) {
       if (digitalRead(inBright)) {
         stay = false;
       }
       
-      uint32_t i = 0;
       analogWrite(led, 128 * brightnessMultiplier);
       i++;
-      if (i == 700) {
+      if (i >= 700) {
         i = 0;
         stay = false;
       }
@@ -103,11 +103,11 @@ void checkSpeed() {
     }
 
     bool stay = true;
-    while(stay) {
-      uint32_t i = 0;
+    uint32_t i = 0;
+    while(stay == true) {
       analogWrite(led, 260 - (speedModifier * 8.5));
       i++;
-      if (digitalRead(inBright)) {
+      if (digitalRead(inSpeed)) {
         stay = false;
       }
       if (i == 700) {
