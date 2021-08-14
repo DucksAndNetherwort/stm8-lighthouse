@@ -2,7 +2,7 @@
 
 This is the manual for how to use the device. For a build guide, go [here](https://github.com/DucksAndNetherwort/stm8-lighthouse/tree/master/half_sine_led_generator).
 
-![device image]()
+![device image](https://github.com/DucksAndNetherwort/stm8-lighthouse/blob/master/device_image.jpg)
 
 ## Powering the Device
 
