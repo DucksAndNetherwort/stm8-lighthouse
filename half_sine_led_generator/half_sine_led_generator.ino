@@ -1,11 +1,12 @@
 int led = PC3;
-int inBright = PD1;
-float brightnessMultiplier = 2;
-int inSpeed = PD2;
-int speedModifier = 10;
+int inBright = PD1; ///< this is the brightness adjustment button input
+int inSpeed = PD2; ///< this is the frequency adjustment button input
+
+float brightnessMultiplier = 2; ///< the led brightness multiplier
+int speedModifier = 10; ///< the frequency adjustment variable
 
 #define SIN_LEN 512
-static const uint8_t sin_table[] =
+static const uint8_t sin_table[] = ///< the sine lookup table
 {
     128, 129, 131, 132, 134, 135, 137, 138, 140, 142, 143, 145, 146, 148, 149, 151,
     152, 154, 155, 157, 158, 160, 162, 163, 165, 166, 167, 169, 170, 172, 173, 175,
@@ -47,7 +48,7 @@ void setup() {
 
 }
 
-void checkBright() {
+void checkBright() { /// this updates the brightness multiplier
   if (!digitalRead(inBright)) {
     delay(5);
     if (brightnessMultiplier == 2) {
@@ -77,11 +78,10 @@ void checkBright() {
       }
       delay(1);
     }
-    digitalWrite(led, LOW);
   }
 }
 
-void checkSpeed() {
+void checkSpeed() { /// this updates the frequency modifier
    if(!digitalRead(inSpeed)) {
     if (speedModifier == 5) {
       speedModifier = 10;
@@ -119,9 +119,9 @@ void checkSpeed() {
   }
 }
 
-uint16_t i;
-int16_t sineOutput;
-void loop() {
+uint16_t i; ///< this is to keep track of the position on the sine wave
+int16_t sineOutput; ///< this is where the sine value goes
+void loop() { /// do i really need to say that this is the main loop?
   i++;
   delay(speedModifier);
   sineOutput = sinSample(i) * 2;
