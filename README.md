@@ -14,7 +14,7 @@ There are 6 possible blink rate values, and 4 possible brightness values.
 
 To change the brightness, press the button farthest from the USB connector, which will increase the brightness setting one position, and show it on the LED.
 
-To change the rate the LED blinks, press the button nearest the USB connector, which will increase the rate one position,
+To change the rate the LED blinks, press the button nearest the USB connector, which will decrease the rate one position,
 
 and show it on the LED, with brighter meaning faster.
 
